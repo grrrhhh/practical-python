@@ -1,39 +1,21 @@
 # report.py
 #
-# Exercise 2.4
-import csv
+from fileparse import parse_csv
 
 def read_portfolio(filename):
     portfolio = []
-
-    with open(filename, 'rt') as f:
-        rows = csv.reader(f)
-        headers = next(rows)
-
-        for row in rows:
-            #holding = { headers[i]: row[i] for i in range(len(headers)) }
-            holding = dict(zip(headers, row))
-            holding['shares'] = int(holding['shares'])
-            holding['price'] = float(holding['price'])
-            portfolio.append(holding)
-
+    portfolio = parse_csv(filename, types=[str, int, float])
     return portfolio
 
 def portfolio_cost(filename):
     portfolio = read_portfolio(filename)
     total = 0.0
-
     for holding in portfolio:
         total += holding['shares'] * holding['price']
-
     return total
 
 def read_prices(filename):
-   
-    with open(filename, 'rt') as f:
-        rows = csv.reader(f)
-        ticker = { row[0]: float(row[1])  for row in rows if row}
-
+    ticker = dict(parse_csv(filename, types=[str,float], has_headers=False)) 
     return ticker
 
 
@@ -48,7 +30,6 @@ def calculate_p_l(portfolio, ticker):
         ungained_portfolio_value += holding['price'] * holding['shares']
 
     p_l = current_portfolio_value - ungained_portfolio_value
-
     return p_l
 
 def make_report(portfolio, ticker):
@@ -59,7 +40,6 @@ def make_report(portfolio, ticker):
         change_in_price = ticker[symbol] - holding['price']
         row = ( symbol, holding['shares'], ticker[symbol], change_in_price )
         report.append(row)
-    
     return report
 
 def print_report(report):
@@ -77,16 +57,13 @@ def portfolio_report(f_portfolio, f_prices):
     prices = read_prices(f_prices)
     print_report(make_report(portfolio, prices))
 
+
 portfolio_source = 'Data/portfolio.csv'
 price_source = 'Data/prices.csv'
-
 portfolio = read_portfolio(portfolio_source)
 prices = read_prices(price_source)
 
 print('Portfolio Cost: ', portfolio_cost(portfolio_source) )
 print('P/L:', calculate_p_l(portfolio, prices) )
-
-# report = make_report(portfolio, prices)
-# print_report(report)
 
 portfolio_report('Data/portfolio.csv', 'Data/prices.csv')

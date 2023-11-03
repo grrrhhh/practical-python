@@ -36,6 +36,7 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=','
     
     return records
 
-
-
-
+portfolio = parse_csv('Data/portfolio.csv', types=[str, int, float])
+shares_held = parse_csv('Data/portfolio.csv', select=['name', 'shares'], types=[str, int])
+prices = parse_csv("Data/prices.csv", types=[str,float], has_headers=False)
+portfolio_2 = portfolio = parse_csv('Data/portfolio.dat', types=[str, int, float], delimiter=' ')

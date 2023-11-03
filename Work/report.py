@@ -57,13 +57,13 @@ def portfolio_report(f_portfolio, f_prices):
     prices = read_prices(f_prices)
     print_report(make_report(portfolio, prices))
 
+if __name__ == '__main__':
+    portfolio_source = 'Data/portfolio.csv'
+    price_source = 'Data/prices.csv'
+    portfolio = read_portfolio(portfolio_source)
+    prices = read_prices(price_source)
 
-portfolio_source = 'Data/portfolio.csv'
-price_source = 'Data/prices.csv'
-portfolio = read_portfolio(portfolio_source)
-prices = read_prices(price_source)
+    print('Portfolio Cost: ', portfolio_cost(portfolio_source) )
+    print('P/L:', calculate_p_l(portfolio, prices) )
 
-print('Portfolio Cost: ', portfolio_cost(portfolio_source) )
-print('P/L:', calculate_p_l(portfolio, prices) )
-
-portfolio_report('Data/portfolio.csv', 'Data/prices.csv')
+    portfolio_report('Data/portfolio.csv', 'Data/prices.csv')

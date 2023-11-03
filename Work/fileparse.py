@@ -44,10 +44,10 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=','
             records.append(record)
     
     return records
-
-portfolio = parse_csv('Data/portfolio.csv', types=[str, int, float])
-shares_held = parse_csv('Data/portfolio.csv', select=['name', 'shares'], types=[str, int])
-prices = parse_csv("Data/prices.csv", types=[str,float], has_headers=False)
-portfolio_2 = portfolio = parse_csv('Data/portfolio.dat', types=[str, int, float], delimiter=' ')
-portfolio = parse_csv('Data/missing.csv', types=[str, int, float])
-portfolio = parse_csv('Data/missing.csv', types=[str,int,float], silence_errors=True)
+if __name__ == '__main__':
+    portfolio = parse_csv('Data/portfolio.csv', types=[str, int, float])
+    shares_held = parse_csv('Data/portfolio.csv', select=['name', 'shares'], types=[str, int])
+    prices = parse_csv("Data/prices.csv", types=[str,float], has_headers=False)
+    portfolio_2 = portfolio = parse_csv('Data/portfolio.dat', types=[str, int, float], delimiter=' ')
+    portfolio = parse_csv('Data/missing.csv', types=[str, int, float])
+    portfolio = parse_csv('Data/missing.csv', types=[str,int,float], silence_errors=True)

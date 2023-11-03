@@ -12,7 +12,8 @@ def read_portfolio(filename):
         headers = next(rows)
 
         for row in rows:
-            holding = { headers[i]: row[i] for i in range(len(headers)) }
+            #holding = { headers[i]: row[i] for i in range(len(headers)) }
+            holding = dict(zip(headers, row))
             holding['shares'] = int(holding['shares'])
             holding['price'] = float(holding['price'])
             portfolio.append(holding)
@@ -55,12 +56,9 @@ def make_report(portfolio, ticker):
     report = []
 
     for holding in portfolio:
-        row = []
         symbol = holding['name']
-        row.append(symbol)
-        row.append(holding['shares'])
-        row.append(ticker[symbol])
-        row.append(ticker[symbol] - holding['price'])
+        change_in_price = ticker[symbol] - holding['price']
+        row = ( symbol, holding['shares'], ticker[symbol], change_in_price )
         report.append(row)
     
     return report

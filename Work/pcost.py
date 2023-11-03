@@ -2,22 +2,30 @@
 #
 # Exercise 1.27
 
-def get_a_stock(): 
-    with open('Data/portfolio.csv', 'rt') as f:
-        next(f)
-        for line in f:
-            line = line.strip()
-            line = line.split(',')
-            yield line
+import csv
+import sys
 
-total_cost = 0
+def portfolio_cost(filename):
+    total_cost = 0.0
 
-for _, n_stock, stock_price in get_a_stock():
-    # print(n_stock, stock_price)
-    total_cost += int(n_stock) * float(stock_price)
+    with open(filename) as f:
+        rows = csv.reader(f)
+        headers = next(rows)
+        for rowno, row in enumerate(rows, start=1):
+            record = dict(zip(headers, row))
+            try:
+                nshares = int(record['shares'])
+                price = float(record['price'])
+                total_cost += nshares * price
+            except ValueError:
+                print(f'Row {rowno}: Bad row: {row}')
 
-print('Total Cost ', total_cost)
+    return total_cost
 
+if len(sys.argv) == 2:
+    filename = sys.argv[1]
+else:
+    filename = input('Enter a filename:')
 
-
-
+cost = portfolio_cost(filename)
+print('Total cost:', cost)

@@ -4,7 +4,10 @@
 # fileparse.py
 import csv
 
-def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=','):
+def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=',', silence_errors=False):
+    if select and not has_headers:
+        raise RuntimeError("select argument requires column headers")
+
     with open(filename) as f:
         rows = csv.reader(f, delimiter=delimiter)
         if has_headers:
@@ -17,7 +20,7 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=','
             indices = []
 
         records = []
-        for row in rows:
+        for row_no, row in enumerate(rows, start=1):
             if not row:
                 continue
 
@@ -25,7 +28,13 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=','
                 row = [ row[index] for index in indices ]
            
             if types:
-                row = [func(val) for func, val in zip(types, row) ]
+                try:
+                    row = [ func(val) for func, val in zip(types, row) ]
+                except ValueError as e:
+                    if silence_errors:
+                        continue
+                    print(f"Row {row_no}: Couldn't convert {row}")
+                    print(f"Row {row_no}: {e}")
             
             if has_headers:
                 record = dict(zip(headers, row))
@@ -40,3 +49,5 @@ portfolio = parse_csv('Data/portfolio.csv', types=[str, int, float])
 shares_held = parse_csv('Data/portfolio.csv', select=['name', 'shares'], types=[str, int])
 prices = parse_csv("Data/prices.csv", types=[str,float], has_headers=False)
 portfolio_2 = portfolio = parse_csv('Data/portfolio.dat', types=[str, int, float], delimiter=' ')
+portfolio = parse_csv('Data/missing.csv', types=[str, int, float])
+portfolio = parse_csv('Data/missing.csv', types=[str,int,float], silence_errors=True)

@@ -3,8 +3,8 @@
 from fileparse import parse_csv
 
 def read_portfolio(filename):
-    portfolio = []
-    portfolio = parse_csv(filename, types=[str, int, float])
+    with open(filename, 'rt') as lines:
+        portfolio = parse_csv(lines, types=[str, int, float])
     return portfolio
 
 def portfolio_cost(filename):
@@ -15,7 +15,8 @@ def portfolio_cost(filename):
     return total
 
 def read_prices(filename):
-    ticker = dict(parse_csv(filename, types=[str,float], has_headers=False)) 
+    with open(filename) as lines:
+        ticker = dict(parse_csv(lines, types=[str,float], has_headers=False)) 
     return ticker
 
 

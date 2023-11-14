@@ -54,3 +54,12 @@ def create_formatter(fmt):
         raise RuntimeError(f'Unknown format {fmt}')
     
     return formatter
+
+
+def print_table(table, columns, formatter):
+    formatter.headings(columns)
+    for row in table:
+        rowdata = [ str(getattr(row, col_name)) for col_name in columns ]
+        formatter.row(rowdata)
+
+

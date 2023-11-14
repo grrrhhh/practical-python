@@ -1,17 +1,20 @@
 # report.py
 #
 from fileparse import parse_csv
+from stock import Stock
 
 def read_portfolio(filename):
     with open(filename, 'rt') as lines:
         portfolio = parse_csv(lines, types=[str, int, float])
+
+    portfolio = [ Stock(h['name'], h['shares'], h['price']) for h in portfolio]
     return portfolio
 
 def portfolio_cost(filename):
     portfolio = read_portfolio(filename)
     total = 0.0
     for holding in portfolio:
-        total += holding['shares'] * holding['price']
+        total += holding.shares * holding.price
     return total
 
 def read_prices(filename):
@@ -25,10 +28,10 @@ def calculate_p_l(portfolio, ticker):
     ungained_portfolio_value = 0.0
 
     for holding in portfolio:
-        symbol = holding['name']
-        current_price = ticker[symbol] * holding['shares']
+        symbol = holding.name
+        current_price = ticker[symbol] * holding.shares
         current_portfolio_value += current_price
-        ungained_portfolio_value += holding['price'] * holding['shares']
+        ungained_portfolio_value += holding.price * holding.shares
 
     p_l = current_portfolio_value - ungained_portfolio_value
     return p_l
@@ -37,9 +40,9 @@ def make_report(portfolio, ticker):
     report = []
 
     for holding in portfolio:
-        symbol = holding['name']
-        change_in_price = ticker[symbol] - holding['price']
-        row = ( symbol, holding['shares'], ticker[symbol], change_in_price )
+        symbol = holding.name
+        change_in_price = ticker[symbol] - holding.price
+        row = ( symbol, holding.shares, ticker[symbol], change_in_price )
         report.append(row)
     return report
 

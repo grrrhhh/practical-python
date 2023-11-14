@@ -2,6 +2,7 @@
 #
 from fileparse import parse_csv
 from stock import Stock
+import tableformat 
 
 def read_portfolio(filename):
     with open(filename, 'rt') as lines:
@@ -46,33 +47,33 @@ def make_report(portfolio, ticker):
         report.append(row)
     return report
 
-def print_report(report):
-    headers = ('Name', 'Shares', 'Price', 'Change')
-    print('%10s %10s %10s %10s' % headers)
-    print(('-' * 10 + ' ') * len(headers))
-
+def print_report(report, formatter):
+    formatter.headings(['Name', 'Shares', 'Price', 'Change'])
     for name, shares, price, change in report:
-        price = "$" + f'{price:.2f}'
-        print(f"{name:>10s} {shares:>10d} {price:>10s} {change:>10.2f}")
+        rowdata = [ name, str(shares), f'{price:0.2f}', f'{change:0.2f}' ]
+        formatter.row(rowdata)
 
 
-def portfolio_report(f_portfolio, f_prices):
+def portfolio_report(f_portfolio, f_prices, fmt='txt'):
     portfolio = read_portfolio(f_portfolio)
     prices = read_prices(f_prices)
-    print_report(make_report(portfolio, prices))
+    report = make_report(portfolio, prices)
+
+    formatter = tableformat.create_formatter(fmt)
+    print_report(report, formatter)
 
 def main(args):
-    if len(args) != 3:
-        raise SystemExit('Usage: %s portfile pricefile' % args[0])
+    if len(args) != 4:
+        raise SystemExit('Usage: %s portfile pricefile report_format' % args[0])
 
-    portfolio_source, price_source = args[1], args[2]
+    portfolio_source, price_source, fmt = args[1], args[2], args[3]
     portfolio = read_portfolio(portfolio_source)
     prices = read_prices(price_source)
 
     print('Portfolio Cost: ', portfolio_cost(portfolio_source) )
     print('P/L:', calculate_p_l(portfolio, prices) )
 
-    portfolio_report(portfolio_source, price_source)
+    portfolio_report(portfolio_source, price_source, fmt)
 
 if __name__ == '__main__':
     import sys

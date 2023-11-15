@@ -5,11 +5,11 @@ from stock import Stock
 from portfolio import Portfolio
 import tableformat 
 
-def read_portfolio(filename):
+def read_portfolio(filename, **opts):
     with open(filename, 'rt') as lines:
-        portfolio = parse_csv(lines, types=[str, int, float])
+        portfolio = parse_csv(lines, types=[str, int, float], **opts)
 
-    portfolio = [ Stock(h['name'], h['shares'], h['price']) for h in portfolio]
+    portfolio = [ Stock(**h) for h in portfolio]
     return Portfolio(portfolio)
 
 def portfolio_cost(filename):

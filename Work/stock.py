@@ -1,7 +1,7 @@
 from typedproperty import String, Integer, Float
 
 class Stock:
-    # __slots__ = ('name','_shares','price')
+    __slots__ = ('_name','_shares','_price')
 
     name = String('name')
     shares = Integer('shares')

@@ -3,6 +3,8 @@
 # Exercise 3.3
 # fileparse.py
 import csv
+import logging
+log = logging.getLogger(__name__)
 
 def parse_csv(lines, select=None, types=None, has_headers=True, delimiter=',', silence_errors=False):
     if select and not has_headers:
@@ -30,10 +32,10 @@ def parse_csv(lines, select=None, types=None, has_headers=True, delimiter=',', s
             try:
                 row = [ func(val) for func, val in zip(types, row) ]
             except ValueError as e:
-                if silence_errors:
-                    continue
-                print(f"Row {row_no}: Couldn't convert {row}")
-                print(f"Row {row_no}: {e}")
+                if not silence_errors:
+                    log.warning("Row %d: Couldn't convert %s", row_no, row)
+                    log.debug("Row %d: Reason %s", row_no, e)
+                continue
         
         if has_headers:
             record = dict(zip(headers, row))

@@ -1,9 +1,9 @@
 # report.py
 #
-from fileparse import parse_csv
-from stock import Stock
-from portfolio import Portfolio
-import tableformat 
+from .fileparse import parse_csv
+from .stock import Stock
+from .portfolio import Portfolio
+from . import tableformat 
 
 def read_portfolio(filename, **opts):
     with open(filename) as file:
